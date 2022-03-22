@@ -50,7 +50,7 @@ router.post('/login', (req, res) => {
 			const isPasswordCorrect = bcrypt.compareSync(password, user.password);
 			if (isPasswordCorrect) {
 				res.send({
-					user,
+					user:{...user, password:''},
 					authenticated: true,
 					message: 'User logged in successfully',
 				});

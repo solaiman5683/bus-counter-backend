@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 // Import Routes
-const adminRoutes = require('./routes/adminRoute');
+const authRoutes = require('./routes/authRoute');
 const tripRoutes = require('./routes/tripRoutes');
 
 // application routes
@@ -23,7 +23,7 @@ const run = async () => {
 		app.get('/', (req, res) => {
 			res.send('Hey, Welcome To API 🎉');
 		});
-		app.use('/users', adminRoutes);
+		app.use('/users', authRoutes);
 		app.use('/trips', tripRoutes);
 	} catch (err) {
 		console.log(err);
