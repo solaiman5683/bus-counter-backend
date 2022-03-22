@@ -131,4 +131,41 @@ router.get('/all/date', (req, res) => {
 	});
 });
 
+// delete a trip with date from the database
+router.delete('/delete/date/:id', (req, res) => {
+	const id = req.params.id;
+	collectionWithDate.findOneAndDelete(
+		{ _id: ObjectId(id) },
+		(err, result) => {
+			if (err) {
+				res.send(err);
+			} else {
+				res.send({ message: 'Trip deleted successfully' });
+			}
+		}
+	);
+});
+
+// Update a trip with date in the database
+router.put('/update/date/:id', (req, res) => {
+	const id = req.params.id;
+	collectionWithDate.findOneAndUpdate(
+		{ _id: ObjectId(id) },
+		{
+			$set: {
+				trip_date: req.body.trip_date,
+				trips: [...req.body.trips],
+			},
+		},
+		(err, result) => {
+			if (err) {
+				res.send(err);
+			} else {
+				res.send({ message: 'Trip updated successfully' });
+			}
+		}
+	);
+});
+
+
 module.exports = router;
