@@ -156,13 +156,30 @@ router.post('/add/date', (req, res) => {
 
 // Get all trips with date
 router.get('/all/date', (req, res) => {
-	collectionWithDate.find({}).toArray((err, result) => {
-		if (err) {
-			res.send(err);
-		} else {
-			res.send(result);
+	collectionWithDate
+		.find({})
+		.sort({ _id: -1 })
+		.toArray((err, result) => {
+			if (err) {
+				res.send(err);
+			} else {
+				res.send(result);
+			}
+		});
+});
+
+// get a trip with date from the database
+router.get('/get/date/', (req, res) => {
+	collectionWithDate.findOne(
+		{ trip_date: req.body.trip_date },
+		(err, result) => {
+			if (err) {
+				res.send(err);
+			} else {
+				res.send(result);
+			}
 		}
-	});
+	);
 });
 
 // delete a trip with date from the database
