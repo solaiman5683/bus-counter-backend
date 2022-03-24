@@ -169,17 +169,30 @@ router.get('/all/date', (req, res) => {
 });
 
 // get a trip with date from the database
-router.get('/get/date/', (req, res) => {
-	collectionWithDate.findOne(
-		{ trip_date: req.body.trip_date },
-		(err, result) => {
-			if (err) {
-				res.send(err);
-			} else {
-				res.send(result);
+router.post('/get/date/', (req, res) => {
+	if (req.body.trip_date) {
+		collectionWithDate.findOne(
+			{ trip_date: req.body.trip_date },
+			(err, result) => {
+				if (err) {
+					res.send(err);
+				} else {
+					const trip = result.trips.filter(
+						trip => trip.trip_name === req.body.trip_name
+					);
+					if (trip.length > 0) {
+						res.send(trip);
+					} else {
+						res.status(404).send({ message: 'Trip not found' });
+					}
+				}
 			}
-		}
-	);
+		);
+	} else {
+		res
+			.status(400)
+			.send({ message: 'Please provide a trip date to get the trip' });
+	}
 });
 
 // delete a trip with date from the database
