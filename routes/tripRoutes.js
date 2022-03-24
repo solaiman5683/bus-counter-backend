@@ -73,6 +73,32 @@ router.delete('/delete/:id', (req, res) => {
 
 // Post a trip with date to the database
 router.post('/add/date', (req, res) => {
+	const initialSits = {
+		A1: false,
+		A2: false,
+		A3: false,
+		A4: false,
+		B1: false,
+		B2: false,
+		B3: false,
+		B4: false,
+		C1: false,
+		C2: false,
+		C3: false,
+		C4: false,
+		D1: false,
+		D2: false,
+		D3: false,
+		D4: false,
+		E1: false,
+		E2: false,
+		E3: false,
+		E4: false,
+		F1: false,
+		F2: false,
+		F3: false,
+		F4: false,
+	};
 	collectionWithDate.findOne(
 		{ trip_date: req.body.trip_date },
 		(err, result) => {
@@ -80,31 +106,39 @@ router.post('/add/date', (req, res) => {
 				res.send(err);
 			} else {
 				if (result) {
-					console.log(result);
-					if (result.trips.includes(req.body.trip_name)) {
-						res.send({ message: 'Trip already exits on this date' });
-					} else {
-						collectionWithDate.findOneAndUpdate(
-							{ trip_date: req.body.trip_date },
-							{
-								$set: {
-									trips: [...result.trips, req.body.trip_name],
-								},
+					collectionWithDate.findOneAndUpdate(
+						{ trip_date: req.body.trip_date },
+						{
+							$set: {
+								trips: [
+									...result.trips,
+									{
+										trip_name: req.body.trip_name,
+										trip_time: req.body.trip_time,
+										sits: initialSits,
+									},
+								],
 							},
-							(err, result) => {
-								if (err) {
-									res.send(err);
-								} else {
-									res.send(result);
-								}
+						},
+						(err, result) => {
+							if (err) {
+								res.send(err);
+							} else {
+								res.send({ message: 'Trip added successfully' });
 							}
-						);
-					}
+						}
+					);
 				} else {
 					collectionWithDate.insertOne(
 						{
 							trip_date: req.body.trip_date,
-							trips: [req.body.trip_name],
+							trips: [
+								{
+									trip_name: req.body.trip_name,
+									trip_time: req.body.trip_time,
+									sits: initialSits,
+								},
+							],
 						},
 						(err, result) => {
 							if (err) {
@@ -134,16 +168,13 @@ router.get('/all/date', (req, res) => {
 // delete a trip with date from the database
 router.delete('/delete/date/:id', (req, res) => {
 	const id = req.params.id;
-	collectionWithDate.findOneAndDelete(
-		{ _id: ObjectId(id) },
-		(err, result) => {
-			if (err) {
-				res.send(err);
-			} else {
-				res.send({ message: 'Trip deleted successfully' });
-			}
+	collectionWithDate.findOneAndDelete({ _id: ObjectId(id) }, (err, result) => {
+		if (err) {
+			res.send(err);
+		} else {
+			res.send({ message: 'Trip deleted successfully' });
 		}
-	);
+	});
 });
 
 // Update a trip with date in the database
@@ -166,6 +197,5 @@ router.put('/update/date/:id', (req, res) => {
 		}
 	);
 });
-
 
 module.exports = router;
