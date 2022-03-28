@@ -13,6 +13,7 @@ app.use(cors());
 // Import Routes
 const authRoutes = require('./routes/authRoute');
 const tripRoutes = require('./routes/tripRoutes');
+const bookingRoute = require('./routes/bookingRoute');
 
 // application routes
 const run = async () => {
@@ -25,6 +26,7 @@ const run = async () => {
 		});
 		app.use('/users', authRoutes);
 		app.use('/trips', tripRoutes);
+		app.use('/booking', bookingRoute);
 	} catch (err) {
 		console.log(err);
 	}
