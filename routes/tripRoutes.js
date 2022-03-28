@@ -182,7 +182,10 @@ router.post('/get/date/', (req, res) => {
 							trip => trip.trip_name === req.body.trip_name
 						);
 						if (trip.length > 0) {
-							res.send(trip);
+							res.send({
+								_id: result._id,
+								trip: trip
+							});
 						} else {
 							res.status(404).send({ message: 'Trip not found' });
 						}

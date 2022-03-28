@@ -22,6 +22,7 @@ router.post('/add', (req, res) => {
 				chada: req.body.chada,
 				other_charges: req.body.other_charges,
 				total: req.body.total,
+				grand_total: req.body.grand_total,
 				status: 'pending',
 			},
 			(err, result) => {
