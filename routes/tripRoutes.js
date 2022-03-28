@@ -177,11 +177,15 @@ router.post('/get/date/', (req, res) => {
 				if (err) {
 					res.send(err);
 				} else {
-					const trip = result.trips.filter(
-						trip => trip.trip_name === req.body.trip_name
-					);
-					if (trip.length > 0) {
-						res.send(trip);
+					if (result) {
+						const trip = result.trips.filter(
+							trip => trip.trip_name === req.body.trip_name
+						);
+						if (trip.length > 0) {
+							res.send(trip);
+						} else {
+							res.status(404).send({ message: 'Trip not found' });
+						}
 					} else {
 						res.status(404).send({ message: 'Trip not found' });
 					}
