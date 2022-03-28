@@ -8,15 +8,16 @@ const collection = db.collection('bookings');
 const collectionWithDate = db.collection('tripsWithDate');
 
 router.post('/add', (req, res) => {
-	console.log(req.body);
+	// console.log(req.body);
 	if (req.body.trip_name) {
 		collection.insertOne(
 			{
 				trip_name: req.body.trip_name,
+				trip_id : req.body.trip_id,
 				passenger_name: req.body.passenger_name,
 				sit_selected: req.body.sit_selected,
-				date: req.body.date,
-				time: req.body.time,
+				trip_date: req.body.trip_date,
+				trip_time: req.body.trip_time,
 				charge: req.body.charge,
 				chada: req.body.chada,
 				other_charges: req.body.other_charges,
@@ -27,10 +28,44 @@ router.post('/add', (req, res) => {
 				if (err) {
 					res.send(err);
 				} else {
+					collectionWithDate.findOne(
+						{ _id: ObjectId(req.body.trip_id) },
+						(err, result) => {
+							if (err) {
+								res.send(err);
+							} else {
+								// console.log(result);
+								const updated = result.trips.map((item) => {
+									if (item.trip_time === req.body.trip_time) {
+										return { ...item, sits: req.body.sits }
+									} else {
+										return item;
+									}
+								});
+								collectionWithDate.updateOne(
+									{ _id: ObjectId(req.body.trip_id) },
+									{
+										$set: {
+											trips: updated,
+										},
+									},
+									(err, result) => {
+										if (err) {
+											res.send(err);
+										} else {
+											// console.log(result);
+										}
+									}
+								);
+								// console.log(updated , 'updated');
+							}
+						}
+					);
 					res.send({ message: 'Trip Booked successfully' });
 				}
 			}
 		);
+		
 	} else {
 		res.status(400).send({ message: 'Trip name(trip_name) is required' });
 	}
@@ -44,8 +79,7 @@ router.get('/all', (req, res) => {
 			res.send(result);
 		}
 	});
-}
-);
+});
 
 router.put('/approve/:id', (req, res) => {
 	const id = req.params.id;
@@ -64,9 +98,6 @@ router.put('/approve/:id', (req, res) => {
 			}
 		}
 	);
-}
-);
-
-
+});
 
 module.exports = router;
