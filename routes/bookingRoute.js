@@ -13,7 +13,7 @@ router.post('/add', (req, res) => {
 		collection.insertOne(
 			{
 				trip_name: req.body.trip_name,
-				trip_id : req.body.trip_id,
+				trip_id: req.body.trip_id,
 				passenger_name: req.body.passenger_name,
 				sit_selected: req.body.sit_selected,
 				trip_date: req.body.trip_date,
@@ -36,9 +36,9 @@ router.post('/add', (req, res) => {
 								res.send(err);
 							} else {
 								// console.log(result);
-								const updated = result.trips.map((item) => {
+								const updated = result.trips.map(item => {
 									if (item.trip_time === req.body.trip_time) {
-										return { ...item, sits: req.body.sits }
+										return { ...item, sits: req.body.sits };
 									} else {
 										return item;
 									}
@@ -66,7 +66,6 @@ router.post('/add', (req, res) => {
 				}
 			}
 		);
-		
 	} else {
 		res.status(400).send({ message: 'Trip name(trip_name) is required' });
 	}
@@ -99,6 +98,17 @@ router.put('/approve/:id', (req, res) => {
 			}
 		}
 	);
+});
+
+router.delete('/delete/:id', (req, res) => {
+	const id = req.params.id;
+	collection.deleteOne({ _id: ObjectId(id) }, (err, result) => {
+		if (err) {
+			res.status(400).send(err);
+		} else {
+			res.send({ message: 'Trip deleted successfully' });
+		}
+	});
 });
 
 module.exports = router;
