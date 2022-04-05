@@ -22,6 +22,7 @@ router.post('/add', (req, res) => {
 				trip_time: req.body.trip_time,
 				charge: req.body.charge,
 				chada: req.body.chada,
+				commission: req.body.commission,
 				other_charges: req.body.other_charges,
 				total: req.body.total,
 				grand_total: req.body.grand_total,
