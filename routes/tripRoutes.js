@@ -204,6 +204,7 @@ router.post('/get/date/', (req, res) => {
 										res.send(err);
 									} else {
 										res.send({
+											_id: result.insertedId,
 											trip: [
 												{
 													trip_name: req.body.trip_name,
@@ -233,6 +234,7 @@ router.post('/get/date/', (req, res) => {
 									res.send(err);
 								} else {
 									res.send({
+										_id: result.insertedId,
 										trip: [
 											{
 												trip_name: req.body.trip_name,
