@@ -12,6 +12,8 @@ router.post('/add', (req, res) => {
 	if (req.body.trip_name) {
 		collection.insertOne(
 			{
+				trip_from: req.body.trip_from,
+				trip_to: req.body.trip_to,
 				trip_name: req.body.trip_name,
 				trip_id: req.body.trip_id,
 				passenger_name: req.body.passenger_name,
