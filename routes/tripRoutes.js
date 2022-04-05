@@ -204,16 +204,18 @@ router.post('/get/date/', (req, res) => {
 										res.send(err);
 									} else {
 										res.send({
-											trip: {
-												trip_date: req.body.trip_date,
-												trips: [
-													{
-														trip_name: req.body.trip_name,
-														trip_time: "00.00",
-														sits: initialSits,
-													},
-												],
-											}
+											trip: [
+												{
+													trip_date: req.body.trip_date,
+													trips: [
+														{
+															trip_name: req.body.trip_name,
+															trip_time: "00.00",
+															sits: initialSits,
+														},
+													],
+												}
+											]
 										});
 									}
 								}
@@ -236,16 +238,18 @@ router.post('/get/date/', (req, res) => {
 									res.send(err);
 								} else {
 									res.send({
-										trip: {
-											trip_date: req.body.trip_date,
-											trips: [
-												{
-													trip_name: req.body.trip_name,
-													trip_time: "00.00",
-													sits: initialSits,
-												},
-											],
-										}
+										trip: [
+											{
+												trip_date: req.body.trip_date,
+												trips: [
+													{
+														trip_name: req.body.trip_name,
+														trip_time: "00.00",
+														sits: initialSits,
+													},
+												],
+											}
+										]
 									});
 								}
 							}
