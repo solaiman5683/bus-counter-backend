@@ -194,7 +194,7 @@ router.post('/get/date/', (req, res) => {
 									trips: [
 										{
 											trip_name: req.body.trip_name,
-											trip_time: "00.00",
+											trip_time: '00.00',
 											sits: initialSits,
 										},
 									],
@@ -206,16 +206,11 @@ router.post('/get/date/', (req, res) => {
 										res.send({
 											trip: [
 												{
-													trip_date: req.body.trip_date,
-													trips: [
-														{
-															trip_name: req.body.trip_name,
-															trip_time: "00.00",
-															sits: initialSits,
-														},
-													],
-												}
-											]
+													trip_name: req.body.trip_name,
+													trip_time: '00.00',
+													sits: initialSits,
+												},
+											],
 										});
 									}
 								}
@@ -228,7 +223,7 @@ router.post('/get/date/', (req, res) => {
 								trips: [
 									{
 										trip_name: req.body.trip_name,
-										trip_time: "00.00",
+										trip_time: '00.00',
 										sits: initialSits,
 									},
 								],
@@ -240,16 +235,11 @@ router.post('/get/date/', (req, res) => {
 									res.send({
 										trip: [
 											{
-												trip_date: req.body.trip_date,
-												trips: [
-													{
-														trip_name: req.body.trip_name,
-														trip_time: "00.00",
-														sits: initialSits,
-													},
-												],
-											}
-										]
+												trip_name: req.body.trip_name,
+												trip_time: '00.00',
+												sits: initialSits,
+											},
+										],
 									});
 								}
 							}
