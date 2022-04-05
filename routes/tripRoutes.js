@@ -71,34 +71,35 @@ router.delete('/delete/:id', (req, res) => {
 	});
 });
 
+const initialSits = {
+	A1: false,
+	A2: false,
+	A3: false,
+	A4: false,
+	B1: false,
+	B2: false,
+	B3: false,
+	B4: false,
+	C1: false,
+	C2: false,
+	C3: false,
+	C4: false,
+	D1: false,
+	D2: false,
+	D3: false,
+	D4: false,
+	E1: false,
+	E2: false,
+	E3: false,
+	E4: false,
+	F1: false,
+	F2: false,
+	F3: false,
+	F4: false,
+};
+
 // Post a trip with date to the database
 router.post('/add/date', (req, res) => {
-	const initialSits = {
-		A1: false,
-		A2: false,
-		A3: false,
-		A4: false,
-		B1: false,
-		B2: false,
-		B3: false,
-		B4: false,
-		C1: false,
-		C2: false,
-		C3: false,
-		C4: false,
-		D1: false,
-		D2: false,
-		D3: false,
-		D4: false,
-		E1: false,
-		E2: false,
-		E3: false,
-		E4: false,
-		F1: false,
-		F2: false,
-		F3: false,
-		F4: false,
-	};
 	collectionWithDate.findOne(
 		{ trip_date: req.body.trip_date },
 		(err, result) => {
@@ -184,13 +185,71 @@ router.post('/get/date/', (req, res) => {
 						if (trip.length > 0) {
 							res.send({
 								_id: result._id,
-								trip: trip
+								trip: trip,
 							});
 						} else {
-							res.status(404).send({ message: 'Trip not found' });
+							collectionWithDate.insertOne(
+								{
+									trip_date: req.body.trip_date,
+									trips: [
+										{
+											trip_name: req.body.trip_name,
+											trip_time: "00.00",
+											sits: initialSits,
+										},
+									],
+								},
+								(err, result) => {
+									if (err) {
+										res.send(err);
+									} else {
+										res.send({
+											trip: {
+												trip_date: req.body.trip_date,
+												trips: [
+													{
+														trip_name: req.body.trip_name,
+														trip_time: "00.00",
+														sits: initialSits,
+													},
+												],
+											}
+										});
+									}
+								}
+							);
 						}
 					} else {
-						res.status(404).send({ message: 'Trip not found' });
+						collectionWithDate.insertOne(
+							{
+								trip_date: req.body.trip_date,
+								trips: [
+									{
+										trip_name: req.body.trip_name,
+										trip_time: "00.00",
+										sits: initialSits,
+									},
+								],
+							},
+							(err, result) => {
+								if (err) {
+									res.send(err);
+								} else {
+									res.send({
+										trip: {
+											trip_date: req.body.trip_date,
+											trips: [
+												{
+													trip_name: req.body.trip_name,
+													trip_time: "00.00",
+													sits: initialSits,
+												},
+											],
+										}
+									});
+								}
+							}
+						);
 					}
 				}
 			}

@@ -8,7 +8,7 @@ const collection = db.collection('users');
 
 // Register a user
 router.post('/register', (req, res) => {
-	const { email, password, name } = req.body;
+	const { email, password, type } = req.body;
 	// check if user already exists
 	collection.findOne({ email }, (err, user) => {
 		if (err) {
@@ -23,10 +23,11 @@ router.post('/register', (req, res) => {
 				{
 					email,
 					password: hashedPassword,
+					type
 				},
 				(err, result) => {
 					if (err) {
-						res.send(err);
+						res.status(500).send(err);
 					} else {
 						res.send({ message: 'User added successfully' });
 					}
@@ -44,7 +45,7 @@ router.post('/login', (req, res) => {
 		if (err) {
 			res.send(err);
 		} else if (!user) {
-			res.send({ message: 'User does not exist' });
+			res.status(401).send({ message: 'User does not exist' });
 		} else {
 			// check if password is correct
 			const isPasswordCorrect = bcrypt.compareSync(password, user.password);
@@ -55,7 +56,7 @@ router.post('/login', (req, res) => {
 					message: 'User logged in successfully',
 				});
 			} else {
-				res.send({ authenticated: false, message: 'Incorrect password' });
+				res.status(401).send({ authenticated: false, message: 'Incorrect password' });
 			}
 		}
 	});
