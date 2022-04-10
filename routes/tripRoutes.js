@@ -96,6 +96,22 @@ const initialSits = {
 	F2: false,
 	F3: false,
 	F4: false,
+	G1: false,
+	G2: false,
+	G3: false,
+	G4: false,
+	H1: false,
+	H2: false,
+	H3: false,
+	H4: false,
+	I1: false,
+	I2: false,
+	I3: false,
+	I4: false,
+	J1: false,
+	J2: false,
+	J3: false,
+	J4: false,
 };
 
 // Post a trip with date to the database
