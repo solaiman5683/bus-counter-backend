@@ -108,7 +108,45 @@ router.delete('/delete/:id', (req, res) => {
 		if (err) {
 			res.status(400).send(err);
 		} else {
-			res.send({ message: 'Trip deleted successfully' });
+			collectionWithDate.findOne(
+				{ _id: ObjectId(req.body.trip_id) },
+				(err, result) => {
+					if (err) {
+						res.send(err);
+					} else {
+						const updated = result.trips.map(item => {
+							if (item.trip_time === req.body.trip_time) {
+								// update the sit object
+								let sits = item.sits;
+								req.body.sit_selected.forEach(sit => {
+									if (Object.keys(sits).includes(sit)) {
+										sits = { ...sits, [sit]: !sits[sit] };
+									}
+									return null;
+								});
+
+								return { ...item, sits };
+							}
+						});
+
+						collectionWithDate.updateOne(
+							{ _id: ObjectId(req.body.trip_id) },
+							{
+								$set: {
+									trips: updated,
+								},
+							},
+							(err, result) => {
+								if (err) {
+									res.send(err);
+								} else {
+									res.send({ message: 'Trip deleted successfully' });
+								}
+							}
+						);
+					}
+				}
+			);
 		}
 	});
 });
