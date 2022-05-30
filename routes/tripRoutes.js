@@ -6,6 +6,7 @@ const { ObjectId } = require('mongodb');
 const db = client.db('BusCounter');
 const collection = db.collection('trips');
 const collectionWithDate = db.collection('tripsWithDate');
+const timeSlot = db.collection('time_slot');
 
 // Post a trip to the database
 router.post('/add', (req, res) => {
@@ -141,7 +142,29 @@ router.post('/add/date', (req, res) => {
 							if (err) {
 								res.send(err);
 							} else {
-								res.send({ message: 'Trip added successfully' });
+								timeSlot.findOneAndUpdate(
+									{
+										trip_time: req.body.trip_time,
+									},
+									{
+										$set: {
+											trip_time: req.body.trip_time,
+										},
+									},
+									{
+										upsert: true,
+									},
+									(err, result) => {
+										if (err) {
+											res.send(err);
+										} else {
+											res.send({
+												message: 'Trip added successfully',
+											});
+										}
+									}
+								);
+								// res.send({ message: 'Trip added successfully' });
 							}
 						}
 					);
@@ -188,84 +211,106 @@ router.get('/all/date', (req, res) => {
 // get a trip with date from the database
 router.post('/get/date/', (req, res) => {
 	if (req.body.trip_date) {
-		collectionWithDate.findOne(
-			{ trip_date: req.body.trip_date },
-			(err, result) => {
+		// find all trips with date
+		collectionWithDate
+			.find({ trip_date: req.body.trip_date })
+			.toArray((err, result) => {
 				if (err) {
 					res.send(err);
 				} else {
 					if (result) {
-						const trip = result.trips.filter(
-							trip => trip.trip_name === req.body.trip_name
-						);
+						// res.send(result);
+						const trip = result?.filter(trip => {
+							if (trip.trip_date === req.body.trip_date) {
+								return trip;
+							}
+						});
+						// res.send(trip);
 						if (trip.length > 0) {
-							res.send({
-								_id: result._id,
-								trip: trip,
-							});
+							res.send(trip);
 						} else {
-							collectionWithDate.insertOne(
-								{
-									trip_date: req.body.trip_date,
-									trips: [
-										{
-											trip_name: req.body.trip_name,
-											trip_time: '00.00',
-											sits: initialSits,
-										},
-									],
-								},
-								(err, result) => {
-									if (err) {
-										res.send(err);
-									} else {
-										res.send({
-											_id: result.insertedId,
-											trip: [
+							// Find all the time slot
+							timeSlot.find({}).toArray(async (err, result) => {
+								if (err) {
+									res.send(err);
+								} else {
+									// console.log(result);
+									let tripsItem = result.map(async item => {
+										const result = await collectionWithDate.insertOne({
+											trip_date: req.body.trip_date,
+											trips: [
 												{
 													trip_name: req.body.trip_name,
-													trip_time: '00.00',
+													trip_time: item.trip_time,
 													sits: initialSits,
 												},
 											],
 										});
-									}
+
+										if (result.acknowledged) {
+											return {
+												_id: result.insertedId,
+												trip_date: req.body.trip_date,
+												trips: [
+													{
+														trip_name: req.body.trip_name,
+														trip_time: item.trip_time,
+														sits: initialSits,
+													},
+												],
+											};
+										}
+									});
+
+									// wait for all promises to resolve
+									Promise.all(tripsItem).then(result => {
+										res.send(result);
+									});
 								}
-							);
+							});
 						}
 					} else {
-						collectionWithDate.insertOne(
-							{
-								trip_date: req.body.trip_date,
-								trips: [
-									{
-										trip_name: req.body.trip_name,
-										trip_time: '00.00',
-										sits: initialSits,
-									},
-								],
-							},
-							(err, result) => {
-								if (err) {
-									res.send(err);
-								} else {
-									res.send({
-										_id: result.insertedId,
-										trip: [
+						timeSlot.find({}).toArray(async (err, result) => {
+							if (err) {
+								res.send(err);
+							} else {
+								// console.log(result);
+								let tripsItem = result.map(async item => {
+									const result = await collectionWithDate.insertOne({
+										trip_date: req.body.trip_date,
+										trips: [
 											{
 												trip_name: req.body.trip_name,
-												trip_time: '00.00',
+												trip_time: item.trip_time,
 												sits: initialSits,
 											},
 										],
 									});
-								}
+
+									if (result.acknowledged) {
+										return {
+											_id: result.insertedId,
+											trip_date: req.body.trip_date,
+											trips: [
+												{
+													trip_name: req.body.trip_name,
+													trip_time: item.trip_time,
+													sits: initialSits,
+												},
+											],
+										};
+									}
+								});
+
+								// wait for all promises to resolve
+								Promise.all(tripsItem).then(result => {
+									res.send(result);
+								});
 							}
-						);
+						});
 					}
 				}
-			}
-		);
+			});
 	} else {
 		res
 			.status(400)
