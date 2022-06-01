@@ -169,25 +169,29 @@ router.post('/add/date', (req, res) => {
 						}
 					);
 				} else {
-					collectionWithDate.insertOne(
-						{
-							trip_date: req.body.trip_date,
-							trips: [
-								{
-									trip_name: req.body.trip_name,
-									trip_time: req.body.trip_time,
-									sits: initialSits,
-								},
-							],
-						},
-						(err, result) => {
-							if (err) {
-								res.send(err);
-							} else {
-								res.send({ message: 'Trip added successfully' });
-							}
-						}
-					);
+					// collectionWithDate.insertOne(
+					// 	{
+					// 		trip_date: req.body.trip_date,
+					// 		trips: [
+					// 			{
+					// 				trip_name: req.body.trip_name,
+					// 				trip_time: req.body.trip_time,
+					// 				sits: initialSits,
+					// 			},
+					// 		],
+					// 	},
+					// 	(err, result) => {
+					// 		if (err) {
+					// 			res.send(err);
+					// 		} else {
+					// 			res.send({ message: 'Trip added successfully' });
+					// 		}
+					// 	}
+					// );
+					res.send({
+						message:
+							'Trips will update automatically according to your selected Time slot',
+					});
 				}
 			}
 		}
