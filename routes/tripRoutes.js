@@ -124,50 +124,51 @@ router.post('/add/date', (req, res) => {
 				res.send(err);
 			} else {
 				if (result) {
-					collectionWithDate.findOneAndUpdate(
-						{ trip_date: req.body.trip_date },
+					timeSlot.findOneAndUpdate(
+						{
+							trip_time: req.body.trip_time,
+						},
 						{
 							$set: {
-								trips: [
-									...result.trips,
-									{
-										trip_name: req.body.trip_name,
-										trip_time: req.body.trip_time,
-										sits: initialSits,
-									},
-								],
+								trip_time: req.body.trip_time,
 							},
+						},
+						{
+							upsert: true,
 						},
 						(err, result) => {
 							if (err) {
 								res.send(err);
 							} else {
-								timeSlot.findOneAndUpdate(
-									{
-										trip_time: req.body.trip_time,
-									},
-									{
-										$set: {
-											trip_time: req.body.trip_time,
-										},
-									},
-									{
-										upsert: true,
-									},
-									(err, result) => {
-										if (err) {
-											res.send(err);
-										} else {
-											res.send({
-												message: 'Trip added successfully',
-											});
-										}
-									}
-								);
-								// res.send({ message: 'Trip added successfully' });
+								res.send({
+									message: 'Trip added successfully',
+								});
 							}
 						}
 					);
+					// collectionWithDate.findOneAndUpdate(
+					// 	{ trip_date: req.body.trip_date },
+					// 	{
+					// 		$set: {
+					// 			trips: [
+					// 				...result.trips,
+					// 				{
+					// 					trip_name: req.body.trip_name,
+					// 					trip_time: req.body.trip_time,
+					// 					sits: initialSits,
+					// 				},
+					// 			],
+					// 		},
+					// 	},
+					// 	(err, result) => {
+					// 		if (err) {
+					// 			res.send(err);
+					// 		} else {
+								
+					// 			// res.send({ message: 'Trip added successfully' });
+					// 		}
+					// 	}
+					// );
 				} else {
 					// collectionWithDate.insertOne(
 					// 	{
