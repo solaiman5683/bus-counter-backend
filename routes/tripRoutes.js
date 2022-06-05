@@ -219,14 +219,14 @@ router.post('/get/date/', (req, res) => {
 					res.send(err);
 				} else {
 					if (result) {
-						// res.send(result);
+						// console.log(result[0]);
 						const trip = result?.filter(trip => {
-							if (trip.trip_name === req.body.trip_name) {
+							if (trip.trips[0].trip_name === req.body.trip_name) {
 								return trip;
 							}
 						});
-						// res.send(trip);
-						if (trip.length > 0) {
+						// console.log(trip);
+						if (trip.length > -1) {
 							res.send(trip);
 						} else {
 							// Find all the time slot
