@@ -124,75 +124,70 @@ router.post('/add/date', (req, res) => {
 				res.send(err);
 			} else {
 				if (result) {
-					timeSlot.findOneAndUpdate(
-						{
-							trip_time: req.body.trip_time,
-						},
+					collectionWithDate.findOneAndUpdate(
+						{ trip_date: req.body.trip_date },
 						{
 							$set: {
-								trip_time: req.body.trip_time,
+								trips: [
+									...result.trips,
+									{
+										trip_name: req.body.trip_name,
+										trip_time: req.body.trip_time,
+										sits: initialSits,
+									},
+								],
 							},
-						},
-						{
-							upsert: true,
 						},
 						(err, result) => {
 							if (err) {
 								res.send(err);
 							} else {
-								res.send({
-									message: 'Trip added successfully',
-								});
+								timeSlot.findOneAndUpdate(
+									{
+										trip_time: req.body.trip_time,
+									},
+									{
+										$set: {
+											trip_time: req.body.trip_time,
+										},
+									},
+									{
+										upsert: true,
+									},
+									(err, result) => {
+										if (err) {
+											res.send(err);
+										} else {
+											res.send({
+												message: 'Trip added successfully',
+											});
+										}
+									}
+								);
+								// res.send({ message: 'Trip added successfully' });
 							}
 						}
 					);
-					// collectionWithDate.findOneAndUpdate(
-					// 	{ trip_date: req.body.trip_date },
-					// 	{
-					// 		$set: {
-					// 			trips: [
-					// 				...result.trips,
-					// 				{
-					// 					trip_name: req.body.trip_name,
-					// 					trip_time: req.body.trip_time,
-					// 					sits: initialSits,
-					// 				},
-					// 			],
-					// 		},
-					// 	},
-					// 	(err, result) => {
-					// 		if (err) {
-					// 			res.send(err);
-					// 		} else {
-								
-					// 			// res.send({ message: 'Trip added successfully' });
-					// 		}
-					// 	}
-					// );
 				} else {
-					// collectionWithDate.insertOne(
-					// 	{
-					// 		trip_date: req.body.trip_date,
-					// 		trips: [
-					// 			{
-					// 				trip_name: req.body.trip_name,
-					// 				trip_time: req.body.trip_time,
-					// 				sits: initialSits,
-					// 			},
-					// 		],
-					// 	},
-					// 	(err, result) => {
-					// 		if (err) {
-					// 			res.send(err);
-					// 		} else {
-					// 			res.send({ message: 'Trip added successfully' });
-					// 		}
-					// 	}
-					// );
-					res.send({
-						message:
-							'Trips will update automatically according to your selected Time slot',
-					});
+					collectionWithDate.insertOne(
+						{
+							trip_date: req.body.trip_date,
+							trips: [
+								{
+									trip_name: req.body.trip_name,
+									trip_time: req.body.trip_time,
+									sits: initialSits,
+								},
+							],
+						},
+						(err, result) => {
+							if (err) {
+								res.send(err);
+							} else {
+								res.send({ message: 'Trip added successfully' });
+							}
+						}
+					);
 				}
 			}
 		}
