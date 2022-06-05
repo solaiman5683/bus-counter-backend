@@ -226,7 +226,7 @@ router.post('/get/date/', (req, res) => {
 							}
 						});
 						// console.log(trip);
-						if (trip.length > -1) {
+						if (trip.length > 0) {
 							res.send(trip);
 						} else {
 							// Find all the time slot
