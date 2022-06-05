@@ -221,7 +221,7 @@ router.post('/get/date/', (req, res) => {
 					if (result) {
 						// res.send(result);
 						const trip = result?.filter(trip => {
-							if (trip.trip_date === req.body.trip_date) {
+							if (trip.trip_name === req.body.trip_name) {
 								return trip;
 							}
 						});
