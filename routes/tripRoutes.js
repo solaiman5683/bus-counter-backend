@@ -229,85 +229,66 @@ router.post('/get/date/', (req, res) => {
 						if (trip.length > 0) {
 							res.send(trip);
 						} else {
-							// Find all the time slot
-							timeSlot.find({}).toArray(async (err, result) => {
-								if (err) {
-									res.send(err);
-								} else {
-									// console.log(result);
-									let tripsItem = result.map(async item => {
-										const result = await collectionWithDate.insertOne({
-											trip_date: req.body.trip_date,
-											trips: [
-												{
-													trip_name: req.body.trip_name,
-													trip_time: item.trip_time,
-													sits: initialSits,
-												},
-											],
-										});
-
-										if (result.acknowledged) {
-											return {
-												_id: result.insertedId,
-												trip_date: req.body.trip_date,
-												trips: [
-													{
-														trip_name: req.body.trip_name,
-														trip_time: item.trip_time,
-														sits: initialSits,
-													},
-												],
-											};
-										}
-									});
-
-									// wait for all promises to resolve
-									Promise.all(tripsItem).then(result => {
-										res.send(result);
-									});
-								}
-							});
-						}
-					} else {
-						timeSlot.find({}).toArray(async (err, result) => {
-							if (err) {
-								res.send(err);
-							} else {
-								// console.log(result);
-								let tripsItem = result.map(async item => {
-									const result = await collectionWithDate.insertOne({
-										trip_date: req.body.trip_date,
-										trips: [
-											{
-												trip_name: req.body.trip_name,
-												trip_time: item.trip_time,
-												sits: initialSits,
-											},
-										],
-									});
-
-									if (result.acknowledged) {
-										return {
+							collectionWithDate.insertOne(
+								{
+									trip_date: req.body.trip_date,
+									trips: [
+										{
+											trip_name: req.body.trip_name,
+											trip_time: '00:00',
+											sits: initialSits,
+										},
+									],
+								},
+								(err, result) => {
+									if (err) {
+										res.send(err);
+									} else {
+										res.send({
 											_id: result.insertedId,
 											trip_date: req.body.trip_date,
 											trips: [
 												{
 													trip_name: req.body.trip_name,
-													trip_time: item.trip_time,
+													trip_time: '00:00',
 													sits: initialSits,
 												},
 											],
-										};
+										});
 									}
-								});
-
-								// wait for all promises to resolve
-								Promise.all(tripsItem).then(result => {
-									res.send(result);
-								});
+								}
+							);
+						}
+					} else {
+						collectionWithDate.insertOne(
+							{
+								trip_date: req.body.trip_date,
+								trips: [
+									{
+										trip_name: req.body.trip_name,
+										trip_time: '00:00',
+										sits: initialSits,
+									},
+								],
+							},
+							(err, result) => {
+								if (err) {
+									res.send(err);
+								} else {
+									res.send({
+										_id: result.insertedId,
+										trip_date: req.body.trip_date,
+										trips: [
+											{
+												trip_name: req.body.trip_name,
+												trip_time: '00:00',
+												sits: initialSits,
+											},
+										],
+									});
+								}
 							}
-						});
+						);
 					}
 				}
 			});
